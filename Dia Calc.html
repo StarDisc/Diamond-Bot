@@ -2,106 +2,76 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Diamond Calculator</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        :root {
-            --bg: var(--tg-theme-bg-color, #ffffff);
-            --text: var(--tg-theme-text-color, #222222);
-            --hint: var(--tg-theme-hint-color, #999999);
-            --button: var(--tg-theme-button-color, #3390ec);
-            --button-text: var(--tg-theme-button-text-color, #ffffff);
+        body { 
+            font-family: sans-serif; 
+            padding: 20px; 
+            background-color: white; 
+            color: black; 
+            text-align: center;
         }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--bg);
-            color: var(--text);
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        .container { width: 100%; max-width: 400px; }
-        h2 { margin-bottom: 10px; font-size: 1.2rem; }
-        .input-group { margin-bottom: 20px; width: 100%; }
-        input {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid var(--button);
-            border-radius: 10px;
+        .container { max-width: 400px; margin: auto; }
+        input { 
+            width: 90%; 
+            padding: 15px; 
+            margin: 20px 0; 
+            border: 2px solid #3390ec; 
+            border-radius: 10px; 
             font-size: 18px;
-            box-sizing: border-box;
-            background: var(--bg);
-            color: var(--text);
+            outline: none;
         }
-        .card {
-            background: var(--tg-theme-secondary-bg-color, #f4f4f5);
-            border-radius: 12px;
-            padding: 15px;
-            width: 100%;
-            box-sizing: border-box;
+        .card { 
+            background: #f4f4f5; 
+            border-radius: 15px; 
+            padding: 10px; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
         }
-        .row {
-            display: flex;
-            justify-content: space-between;
-            padding: 12px 0;
-            border-bottom: 1px solid var(--hint);
+        .row { 
+            display: flex; 
+            justify-content: space-between; 
+            padding: 15px 10px; 
+            border-bottom: 1px solid #ddd;
         }
         .row:last-child { border-bottom: none; }
-        .label { font-weight: 500; }
-        .price { font-family: monospace; font-weight: bold; color: var(--button); }
-        .footer { margin-top: 20px; font-size: 12px; color: var(--hint); }
+        .kyat { font-weight: bold; color: #3390ec; }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <h2>💎 Diamond Price Bot</h2>
-        <div class="input-group">
-            <label style="font-size: 14px; color: var(--hint);">Enter Base Number:</label>
-            <input type="number" id="baseInput" placeholder="e.g. 300" oninput="calculate()">
-        </div>
+        <h3>💎 Diamond Prices (Kyats)</h3>
+        <input type="number" id="baseInput" placeholder="Enter Base Number..." oninput="calculate()">
 
-        <div class="card" id="results">
-            <div class="row"><span class="label">55 Diamonds</span><span class="price" id="p55">0 Kyats</span></div>
-            <div class="row"><span class="label">165 Diamonds</span><span class="price" id="p165">0 Kyats</span></div>
-            <div class="row"><span class="label">275 Diamonds</span><span class="price" id="p275">0 Kyats</span></div>
-            <div class="row"><span class="label">Weekly Pass</span><span class="price" id="pWP">0 Kyats</span></div>
-            <div class="row"><span class="label">Weekly Bundle</span><span class="price" id="pWVB">0 Kyats</span></div>
-            <div class="row"><span class="label">Monthly Bundle</span><span class="price" id="pMVB">0 Kyats</span></div>
-        </div>
-
-        <div class="footer">
-            Logic: (Input ÷ 300) × Factor
+        <div class="card">
+            <div class="row"><span>55 Diamonds</span><span class="kyat" id="p55">0 Kyats</span></div>
+            <div class="row"><span>165 Diamonds</span><span class="kyat" id="p165">0 Kyats</span></div>
+            <div class="row"><span>275 Diamonds</span><span class="kyat" id="p275">0 Kyats</span></div>
+            <div class="row"><span>Weekly Pass</span><span class="kyat" id="pWP">0 Kyats</span></div>
+            <div class="row"><span>Weekly Bundle</span><span class="kyat" id="pWVB">0 Kyats</span></div>
+            <div class="row"><span>Monthly Bundle</span><span class="kyat" id="pMVB">0 Kyats</span></div>
         </div>
     </div>
 
     <script>
-        // Initialize Telegram Mini App
+        // Initialize Telegram
         const tg = window.Telegram.WebApp;
-        tg.expand(); // Make it full screen
-
-        // Your exact factors
-        const factors = {
-            p55: 39,
-            p165: 116,
-            p275: 187,
-            pWP: 76,
-            pWVB: 39,
-            pMVB: 196
-        };
+        tg.ready(); // Tells Telegram the app is ready to show
+        tg.expand(); // Opens it to full height
 
         function calculate() {
-            const inputVal = parseFloat(document.getElementById('baseInput').value);
+            const val = document.getElementById('baseInput').value;
+            const inputVal = parseFloat(val);
             
-            if (isNaN(inputVal) || inputVal <= 0) {
-                Object.keys(factors).forEach(id => document.getElementById(id).innerText = '0');
-                return;
-            }
+            if (!inputVal || inputVal <= 0) return;
 
             const base = inputVal / 300;
+            const factors = {
+                p55: 39, p165: 116, p275: 187,
+                pWP: 76, pWVB: 39, pMVB: 196
+            };
 
             for (const [id, factor] of Object.entries(factors)) {
                 const final = Math.round(base * factor);
