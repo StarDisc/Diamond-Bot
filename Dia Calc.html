@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,37 +7,39 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         body { font-family: sans-serif; text-align: center; padding: 20px; }
-        .box { background: #f0f2f5; padding: 15px; border-radius: 10px; margin-top: 10px; }
-        input { width: 80%; padding: 12px; font-size: 16px; border-radius: 8px; border: 1px solid #ccc; margin-bottom: 20px; }
-        .row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #ddd; }
-        .blue { color: #0088cc; font-weight: bold; }
+        .card { background: #f4f4f5; padding: 15px; border-radius: 10px; margin-top: 20px; text-align: left; }
+        input { width: 90%; padding: 12px; font-size: 18px; border: 2px solid #3390ec; border-radius: 8px; margin-bottom: 10px; }
+        .row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #ddd; }
+        .kyat { color: #3390ec; font-weight: bold; }
     </style>
 </head>
 <body>
 
-    <h2 style="color: #0088cc;">Diamond-Bot</h2>
-    <input type="number" id="baseInput" placeholder="Enter number here..." oninput="calc()">
+    <h2>💎 Diamond Calculator</h2>
+    <input type="number" id="baseInput" placeholder="Enter Base Number..." oninput="calculate()">
 
-    <div class="box">
-        <div class="row"><span>55 Diamonds</span> <span class="blue" id="r1">0 Kyats</span></div>
-        <div class="row"><span>165 Diamonds</span> <span class="blue" id="r2">0 Kyats</span></div>
-        <div class="row"><span>275 Diamonds</span> <span class="blue" id="r3">0 Kyats</span></div>
-        <div class="row"><span>Weekly Pass</span> <span class="blue" id="r4">0 Kyats</span></div>
+    <div class="card">
+        <div class="row"><span>55 Diamonds</span> <span class="kyat" id="r1">0 Kyats</span></div>
+        <div class="row"><span>165 Diamonds</span> <span class="kyat" id="r2">0 Kyats</span></div>
+        <div class="row"><span>275 Diamonds</span> <span class="kyat" id="r3">0 Kyats</span></div>
+        <div class="row"><span>Weekly Pass</span> <span class="kyat" id="r4">0 Kyats</span></div>
     </div>
 
     <script>
-        // Initialize Telegram
+        // Start Telegram
         const tg = window.Telegram.WebApp;
         tg.ready();
         tg.expand();
 
-        function calc() {
-            const v = document.getElementById('baseInput').value;
-            const num = parseFloat(v);
-            if (!num) return;
+        function calculate() {
+            const val = document.getElementById('baseInput').value;
+            const inputNum = parseFloat(val);
+            
+            if (!inputNum || inputNum <= 0) return;
 
-            const base = num / 300;
-            // Calculations
+            // Simple math to avoid errors
+            const base = inputNum / 300;
+
             document.getElementById('r1').innerText = Math.round(base * 39).toLocaleString() + " Kyats";
             document.getElementById('r2').innerText = Math.round(base * 116).toLocaleString() + " Kyats";
             document.getElementById('r3').innerText = Math.round(base * 187).toLocaleString() + " Kyats";
