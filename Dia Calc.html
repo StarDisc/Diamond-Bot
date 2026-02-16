@@ -1,50 +1,70 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Diamond-Bot</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        body { font-family: sans-serif; text-align: center; padding: 20px; }
-        .card { background: #f4f4f5; padding: 15px; border-radius: 10px; margin-top: 20px; text-align: left; }
-        input { width: 90%; padding: 12px; font-size: 18px; border: 2px solid #3390ec; border-radius: 8px; margin-bottom: 10px; }
-        .row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #ddd; }
-        .kyat { color: #3390ec; font-weight: bold; }
+        body { font-family: -apple-system, sans-serif; text-align: center; padding: 20px; background-color: #ffffff; color: #222; }
+        .container { max-width: 400px; margin: 0 auto; }
+        h2 { color: #3390ec; margin-bottom: 5px; }
+        p { font-size: 14px; color: #777; margin-bottom: 20px; }
+        input { 
+            width: 85%; padding: 15px; font-size: 18px; 
+            border: 2px solid #3390ec; border-radius: 12px; 
+            outline: none; transition: 0.3s;
+        }
+        .card { background: #f8f9fa; border-radius: 15px; padding: 15px; margin-top: 20px; border: 1px solid #eee; }
+        .row { display: flex; justify-content: space-between; padding: 12px 5px; border-bottom: 1px solid #eee; }
+        .row:last-child { border-bottom: none; }
+        .kyat { font-weight: bold; color: #3390ec; }
     </style>
 </head>
 <body>
 
-    <h2>💎 Diamond Calculator</h2>
-    <input type="number" id="baseInput" placeholder="Enter Base Number..." oninput="calculate()">
+<div class="container">
+    <h2>💎 Diamond-Bot</h2>
+    <p>Enter base number to calculate Kyats</p>
+    
+    <input type="number" id="baseInput" placeholder="0" oninput="doCalc()">
 
     <div class="card">
-        <div class="row"><span>55 Diamonds</span> <span class="kyat" id="r1">0 Kyats</span></div>
-        <div class="row"><span>165 Diamonds</span> <span class="kyat" id="r2">0 Kyats</span></div>
-        <div class="row"><span>275 Diamonds</span> <span class="kyat" id="r3">0 Kyats</span></div>
-        <div class="row"><span>Weekly Pass</span> <span class="kyat" id="r4">0 Kyats</span></div>
+        <div class="row"><span>55 Diamonds</span><span class="kyat" id="r1">0 Kyats</span></div>
+        <div class="row"><span>165 Diamonds</span><span class="kyat" id="r2">0 Kyats</span></div>
+        <div class="row"><span>275 Diamonds</span><span class="kyat" id="r3">0 Kyats</span></div>
+        <div class="row"><span>Weekly Pass</span><span class="kyat" id="r4">0 Kyats</span></div>
+        <div class="row"><span>Monthly Pass</span><span class="kyat" id="r5">0 Kyats</span></div>
     </div>
+</div>
 
-    <script>
-        // Start Telegram
-        const tg = window.Telegram.WebApp;
-        tg.ready();
-        tg.expand();
+<script>
+    // Initialize Telegram WebApp
+    const tg = window.Telegram.WebApp;
+    tg.ready();
+    tg.expand();
 
-        function calculate() {
-            const val = document.getElementById('baseInput').value;
-            const inputNum = parseFloat(val);
-            
-            if (!inputNum || inputNum <= 0) return;
-
-            // Simple math to avoid errors
-            const base = inputNum / 300;
-
-            document.getElementById('r1').innerText = Math.round(base * 39).toLocaleString() + " Kyats";
-            document.getElementById('r2').innerText = Math.round(base * 116).toLocaleString() + " Kyats";
-            document.getElementById('r3').innerText = Math.round(base * 187).toLocaleString() + " Kyats";
-            document.getElementById('r4').innerText = Math.round(base * 76).toLocaleString() + " Kyats";
+    function doCalc() {
+        const input = document.getElementById('baseInput').value;
+        const val = parseFloat(input);
+        
+        // If input is empty, show 0
+        if (!val || val <= 0) {
+            const ids = ['r1', 'r2', 'r3', 'r4', 'r5'];
+            ids.forEach(id => document.getElementById(id).innerText = "0 Kyats");
+            return;
         }
-    </script>
+
+        const base = val / 300;
+        
+        // Math Logic
+        document.getElementById('r1').innerText = Math.round(base * 39).toLocaleString() + " Kyats";
+        document.getElementById('r2').innerText = Math.round(base * 116).toLocaleString() + " Kyats";
+        document.getElementById('r3').innerText = Math.round(base * 187).toLocaleString() + " Kyats";
+        document.getElementById('r4').innerText = Math.round(base * 76).toLocaleString() + " Kyats";
+        document.getElementById('r5').innerText = Math.round(base * 196).toLocaleString() + " Kyats";
+    }
+</script>
+
 </body>
 </html>
